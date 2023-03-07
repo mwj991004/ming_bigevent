@@ -1,18 +1,20 @@
 /*!
- * Cropper.js v1.5.6
- * https://fengyuanchen.github.io/cropperjs
+ * Cropper v4.1.0
+ * https://fengyuanchen.github.io/cropper
  *
- * Copyright 2015-present Chen Fengyuan
+ * Copyright 2014-present Chen Fengyuan
  * Released under the MIT license
  *
- * Date: 2019-10-04T04:33:48.372Z
+ * Date: 2019-10-12T07:43:51.850Z
  */
 
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Cropper = factory());
-}(this, function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
+  typeof define === 'function' && define.amd ? define(['jquery'], factory) :
+  (global = global || self, factory(global.jQuery));
+}(this, function ($) { 'use strict';
+
+  $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
 
   function _typeof(obj) {
     if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
@@ -3611,6 +3613,57 @@
 
   assign(Cropper.prototype, render, preview, events, handlers, change, methods);
 
-  return Cropper;
+  if ($.fn) {
+    var AnotherCropper$1 = $.fn.cropper;
+    var NAMESPACE$1 = 'cropper';
+
+    $.fn.cropper = function jQueryCropper(option) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      var result;
+      this.each(function (i, element) {
+        var $element = $(element);
+        var isDestroy = option === 'destroy';
+        var cropper = $element.data(NAMESPACE$1);
+
+        if (!cropper) {
+          if (isDestroy) {
+            return;
+          }
+
+          var options = $.extend({}, $element.data(), $.isPlainObject(option) && option);
+          cropper = new Cropper(element, options);
+          $element.data(NAMESPACE$1, cropper);
+        }
+
+        if (typeof option === 'string') {
+          var fn = cropper[option];
+
+          if ($.isFunction(fn)) {
+            result = fn.apply(cropper, args);
+
+            if (result === cropper) {
+              result = undefined;
+            }
+
+            if (isDestroy) {
+              $element.removeData(NAMESPACE$1);
+            }
+          }
+        }
+      });
+      return result !== undefined ? result : this;
+    };
+
+    $.fn.cropper.Constructor = Cropper;
+    $.fn.cropper.setDefaults = Cropper.setDefaults;
+
+    $.fn.cropper.noConflict = function noConflict() {
+      $.fn.cropper = AnotherCropper$1;
+      return this;
+    };
+  }
 
 }));
