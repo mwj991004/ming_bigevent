@@ -39,7 +39,7 @@ $(function() {
         }
         layer.msg('注册成功,请登录！')
         //   模拟人的点击行为
-        $('#link-login').click()
+        $('#link_login').click()
       }
     )
   })
@@ -53,7 +53,7 @@ $(function() {
       data: $(this).serialize(),
       success: function(res) {
         if (res.status !== 0) {
-          return layer.msg('登录失败！')
+          return layer.msg('登录失败！' + res.message)
         }
         layer.msg('登录成功！')
         localStorage.setItem('token', res.token)

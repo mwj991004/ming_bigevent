@@ -41,10 +41,11 @@ $(function() {
         layer.msg('新增分类成功！')
         //关闭弹出层
         layer.close(indexAdd)
+        initArtCateList()
       }
     })
   })
-  
+
   //通过代理的形式，为编辑按钮绑定点击事件
   let indexEdit = null
   $('tbody').on('click', '.btn-edit', function() {
@@ -97,7 +98,7 @@ $(function() {
           }
           layer.msg('删除分类成功！')
           //关闭弹出层
-        //   layer.close(index)
+          //   layer.close(index)
           initArtCateList()
         }
       })
