@@ -41,6 +41,7 @@ $(function() {
         if (res.status !== 0) {
           return layer.msg('获取文章列表失败！' + res.message)
         }
+        console.log(res)
         //使用模板引擎渲染数据
         let htmlStr = template('tpl-table', res)
         $('tbody').html(htmlStr)
@@ -67,19 +68,7 @@ $(function() {
       }
     })
   }
-
-  //为筛选表单绑定submit事件
-  $('#form-search').on('submit', function(e) {
-    e.preventDefault()
-    //获取表单中选项的值
-    let cate_id = $('[name=cate_id]').val()
-    let state = $('[name=state]').val()
-    d.cate_id = cate_id
-    d.state = state
-    //根据筛选条件，重新渲染表格的数据
-    initTable()
-  })
-
+  
   // 渲染分页的方法
   function renderPage(total) {
     //调用laypage.render()方法来渲染分页结构
@@ -112,12 +101,24 @@ $(function() {
       }
     })
   }
+  
+  //为筛选表单绑定submit事件
+  $('#form-search').on('submit', function(e) {
+    e.preventDefault()
+    //获取表单中选项的值
+    let cate_id = $('[name=cate_id]').val()
+    let state = $('[name=state]').val()
+    d.cate_id = cate_id
+    d.state = state
+    //根据筛选条件，重新渲染表格的数据
+    initTable()
+  })
+
 
   //通过代理的形式，为删除按钮绑定点击事件处理函数
   $('tbody').on('click', '.btn-delete', function() {
     // 获取删除按钮的个数
     var len = $('.btn-delete').length
-    console.log(len)
     //获取文章的id
     let id = $(this).attr('data-id')
 

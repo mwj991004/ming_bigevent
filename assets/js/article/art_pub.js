@@ -50,6 +50,7 @@ $(function() {
         if (res.status !== 0) {
           return layer.msg('获取用户信息失败！')
         }
+        console.log(res)
         //把取到的表单值渲染进表单
         setTimeout(function() {
           form.val('formPub', res.data)
@@ -57,17 +58,20 @@ $(function() {
 
         //把文章的内容存入进富文本
         $('[name=content]').html(res.data.content)
-        //初始化富文本编辑器
-        initEditor()
 
         //存图片
 
-        // let imgSrc = window.URL.createObjectURL(coverImg)
-        // document.getElementById('image').src = imgSrc
-        // let canvas
-        // canvas.toBlob(function(coverImg) {})
+        let imgSrc = res.data.cover_img
+        document.getElementById('image').src = imgSrc
+        //为裁剪区域重新设置图片
+        $image
+          .cropper('destroy') //摧毁旧的裁剪区域
+          .attr('src', imgSrc) //重新设置图片路径
+          .cropper(options) //重新初始化裁剪区域
       }
     })
+    //初始化富文本编辑器
+    initEditor()
   } else {
     //初始化富文本编辑器
     initEditor()
@@ -85,12 +89,10 @@ $(function() {
     if (files.length === 0) {
       return
     }
-    console.log(files[0])
     //根据文件，创建对应的URL地址
     let newImgURL = URL.createObjectURL(files[0])
 
     //为裁剪区域重新设置图片
-
     $image
       .cropper('destroy') //摧毁旧的裁剪区域
       .attr('src', newImgURL) //重新设置图片路径
@@ -127,8 +129,11 @@ $(function() {
         //将canvas画布上的内容，转化为文件对象
         //得到文件对象后，进行后续操作
         //5.将文件对象，存储到fd中
+        console.log($('#coverFile')[0].files)
+        if ($('#coverFile')[0].files.length !== 0) {
+          fd.append('cover_img', blob)
+        }
 
-        fd.append('cover_img', blob)
         //6.判断是修改文章还发布新文章
         if (artId) {
           //存文章的id
@@ -138,6 +143,9 @@ $(function() {
 
           updateArticle(fd)
         } else {
+          fd.forEach((v, k) => {
+            console.log(k, v)
+          })
           //6.2发起添加文章的Ajax请求
           publishArticle(fd)
         }
